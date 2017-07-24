@@ -5,6 +5,8 @@ bool fanButton = false;
 bool lightButton = false;
 
 void setup() {
+  Serial.begin(9600);
+  
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
@@ -18,10 +20,11 @@ void loop() {
   displayState();
   
   delay(1);
+}
 
-  // Code for testing
-  // fanState < 2 ? fanState++ : fanState = 0;
-  // light ? light = false : light = true;
+void serialEvent() {
+  String data = Serial.readString();
+  parseSerialInput(data);
 }
 
 void displayState() {
@@ -79,6 +82,14 @@ void parseArduinoInput() {
     lightButton = true;
   } else {
     lightButton = (digitalRead(12) == HIGH);
+  }
+}
+
+void parseSerialInput(String data) {
+  if (data.substring(0, 1).equals("f")) {
+    fanState = data.substring(1, 2).toInt();
+  } else if (data.substring(0, 1).equals("l")) {
+    light ? light = false : light = true;
   }
 }
 
