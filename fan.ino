@@ -1,8 +1,13 @@
+#include <IRremote.h>
+
 int fanState = 0;
 bool light = false;
 
 bool fanButton = false;
 bool lightButton = false;
+
+IRrecv irrecv(7);
+decode_results results;
 
 void setup() {
   Serial.begin(9600);
@@ -13,11 +18,18 @@ void setup() {
   pinMode(5, INPUT);
   pinMode(6, OUTPUT);
   pinMode(12, INPUT);
+  irrecv.enableIRIn();
 }
 
 void loop() {
   parseInput();
   displayState();
+
+  
+  if (irrecv.decode(&results)) {
+    Serial.println(results.value, HEX);
+    irrecv.resume(); // Receive the next value
+  }
   
   delay(1);
 }
